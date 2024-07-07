@@ -3,20 +3,16 @@ package org.palekov.weathertest.steps;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
-import io.restassured.path.json.JsonPath;
-import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.Assert;
 
-public class MyStepdefs {
-    private Response response;
-    JsonPath path;
-    private int statusCode;
+public class PositiveStepdefs extends AbstractStep {
 
     @When("I requesting current weather for the city {string}")
     public void iRequestingCurrentWeatherForTheCity(String cityName) {
         RequestSpecification request = RestAssured.given();
-        response = request.get("http://api.weatherapi.com/v1?q=" + cityName + "&key=70194649043645f69d770805240707");
+        response = request.get("http://api.weatherapi.com/v1/current.json?q="
+                + cityName + "&key=" + apiKey);
         System.out.println("Requesting weather for the city: " + cityName);
         statusCode = response.getStatusCode();
     }
@@ -26,4 +22,6 @@ public class MyStepdefs {
         System.out.println(response.asString());
         Assert.assertEquals(expectedCode, statusCode);
     }
+
+
 }

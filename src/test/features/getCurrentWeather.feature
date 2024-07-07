@@ -1,7 +1,7 @@
-@getCurrentWeather
-Feature: Get get current weather
+@positiveTest
+Feature: Get current weather
 
-  Scenario Outline: Get get current weather by city name
+  Scenario Outline: Get current weather by city name
     When I requesting current weather for the city "<CITY_NAME>"
     Then I receive <RESPONSE> code
 
