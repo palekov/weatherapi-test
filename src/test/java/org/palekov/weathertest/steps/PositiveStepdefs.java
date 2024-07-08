@@ -6,12 +6,16 @@ import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 import org.junit.Assert;
+import org.palekov.weathertest.assertions.SoftAssertionFactory;
+import org.palekov.weathertest.models.LocationDto;
 import org.palekov.weathertest.models.WeatherResponseDto;
 
 import java.io.File;
 import java.io.IOException;
 
 public class PositiveStepdefs extends AbstractStep {
+
+    private final SoftAssertionFactory softAssertionFactory = new SoftAssertionFactory();
 
     @When("I requesting current weather for the city {string}")
     public void iRequestingCurrentWeatherForTheCity(String cityName) {
@@ -30,9 +34,25 @@ public class PositiveStepdefs extends AbstractStep {
 
     @And("I receive correct json response for the city {string}")
     public void iReceiveCorrectJsonResponseForTheCity(String cityName) throws IOException {
-        File file = new File("src/test/resources/" + cityName + ".json");
-        WeatherResponseDto response = objectMapper.readValue(file, WeatherResponseDto.class);
-        System.out.println(response);
+
+        File file = new File("src/test/resources/testdata/" + cityName + ".json");
+
+        WeatherResponseDto expectedResponse = objectMapper.readValue(file, WeatherResponseDto.class);
+        WeatherResponseDto actualResponse = response.then().extract().as(WeatherResponseDto.class);
+
+        LocationDto locationDto = new LocationDto();
+        String loc = locationDto.getName();
+
+        softAssertionFactory.assertThat(actualResponse)
+                .hasLocationName(expectedResponse.getLocation().getName())
+                .hasRegion(expectedResponse.getLocation().getRegion())
+                .hasCountry(expectedResponse.getLocation().getCountry())
+                .hasLat(expectedResponse.getLocation().getLat())
+                .hasLon(expectedResponse.getLocation().getLon())
+                .hasTzId(expectedResponse.getLocation().getTzId())
+                .hasLocaltimeEpoch(expectedResponse.getLocation().getLocaltimeEpoch())
+                .hasLocaltime(expectedResponse.getLocation().getLocaltime());
+        softAssertionFactory.assertAll();
 
     }
 }
