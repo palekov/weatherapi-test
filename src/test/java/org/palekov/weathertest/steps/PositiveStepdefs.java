@@ -1,10 +1,15 @@
 package org.palekov.weathertest.steps;
 
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 import org.junit.Assert;
+import org.palekov.weathertest.models.WeatherResponseDto;
+
+import java.io.File;
+import java.io.IOException;
 
 public class PositiveStepdefs extends AbstractStep {
 
@@ -23,5 +28,11 @@ public class PositiveStepdefs extends AbstractStep {
         Assert.assertEquals(expectedCode, statusCode);
     }
 
+    @And("I receive correct json response for the city {string}")
+    public void iReceiveCorrectJsonResponseForTheCity(String cityName) throws IOException {
+        File file = new File("src/test/resources/" + cityName + ".json");
+        WeatherResponseDto response = objectMapper.readValue(file, WeatherResponseDto.class);
+        System.out.println(response);
 
+    }
 }
