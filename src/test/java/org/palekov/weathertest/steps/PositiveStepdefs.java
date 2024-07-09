@@ -7,7 +7,6 @@ import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 import org.junit.Assert;
 import org.palekov.weathertest.assertions.SoftAssertionFactory;
-import org.palekov.weathertest.models.LocationDto;
 import org.palekov.weathertest.models.WeatherResponseDto;
 
 import java.io.File;
@@ -28,20 +27,14 @@ public class PositiveStepdefs extends AbstractStep {
 
     @Then("I receive {int} code")
     public void receiveCode(int expectedCode) {
-        System.out.println(response.asString());
         Assert.assertEquals(expectedCode, statusCode);
     }
 
     @And("I receive correct json response for the city {string}")
     public void iReceiveCorrectJsonResponseForTheCity(String cityName) throws IOException {
-
         File file = new File("src/test/resources/testdata/" + cityName + ".json");
-
         WeatherResponseDto expectedResponse = objectMapper.readValue(file, WeatherResponseDto.class);
         WeatherResponseDto actualResponse = response.then().extract().as(WeatherResponseDto.class);
-
-        LocationDto locationDto = new LocationDto();
-        String loc = locationDto.getName();
 
         softAssertionFactory.assertThat(actualResponse)
                 .hasLocationName(expectedResponse.getLocation().getName())
@@ -50,9 +43,16 @@ public class PositiveStepdefs extends AbstractStep {
                 .hasLat(expectedResponse.getLocation().getLat())
                 .hasLon(expectedResponse.getLocation().getLon())
                 .hasTzId(expectedResponse.getLocation().getTzId())
-                .hasLocaltimeEpoch(expectedResponse.getLocation().getLocaltimeEpoch())
-                .hasLocaltime(expectedResponse.getLocation().getLocaltime());
+                .hasLocaltimeEpoch()
+                .hasLocaltime()
+                .hasLastUpdatedEpoch()
+                .hasLastUpdated()
+                .hasTempC(expectedResponse.getCurrent().getTempC())
+                .hasTempF(expectedResponse.getCurrent().getTempC())
+                .hasIsDay(expectedResponse.getCurrent().getIsDay())
+                .hasConditionText(expectedResponse.getCurrent().getCondition().getText())
+                .hasConditionIcon(expectedResponse.getCurrent().getCondition().getIcon())
+                .hasConditionCode(expectedResponse.getCurrent().getCondition().getCode());
         softAssertionFactory.assertAll();
-
     }
 }

@@ -27,5 +27,4 @@ public class WeatherDateTimeDeserializer extends StdDeserializer<LocalDateTime> 
         }
         return null;
     }
-
 }

@@ -9,8 +9,8 @@ import org.junit.Assert;
 
 public class NegativeStepdefs extends AbstractStep {
 
-    int responseErrorCode;
-    String responseErrorMessage;
+    private int responseErrorCode;
+    private String responseErrorMessage;
     @When("I requesting current weather with body contains invalid parameter {string}")
     public void iRequestingCurrentWeatherForTheCityWithBodyContainsInvalidParameter(String requestParam) {
         RequestSpecification request = RestAssured.given();
@@ -21,7 +21,6 @@ public class NegativeStepdefs extends AbstractStep {
     @Then("I receive {int} code and response body with error {int} and message {string}")
     public void iReceiveRESPONSECodeAndResponseBodyWithError(int expectedCode, int expectedErrorCode, String expectedErrorMessage) {
         JsonPath path = response.body().jsonPath();
-        System.out.println("RESPONSE body:" + response.getBody().toString());
         if (path!=null) {
             responseErrorCode = path.get("error.code");
             responseErrorMessage = path.get("error.message");
