@@ -21,7 +21,7 @@ public class WeatherDateTimeDeserializer extends StdDeserializer<LocalDateTime> 
     @Override
     public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException {
         String value = jsonParser.getText();
-        if (!"".equals(value)) {
+        if (!value.isBlank()) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:mm");
             return LocalDateTime.parse(value, formatter);
         }
